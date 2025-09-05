@@ -1,13 +1,13 @@
 # Spring Boot PetClinic Migration & Modernization Workshop
 
-This workshop demonstrates how to migrate and modernize the iconic Spring Boot PetClinic application from local execution to cloud deployment on Azure AKS Automatic. Participants will experience the complete modernization journey using AI-powered tools: GitHub Copilot Application Modernization for Java and Containerization Assist.
+This workshop demonstrates how to migrate and modernize the iconic Spring Boot PetClinic application from local execution to cloud deployment on Azure AKS Automatic. Participants will experience the complete modernization journey using AI-powered tools: GitHub Copilot Application Modernization for Java and <container tool>.
 
 ## 🎯 Workshop Goals
 
-- **Simulate On-Prem Execution**: Run [Spring Boot PetClinic](https://github.com/spring-projects/spring-petclinic) locally with PostgreSQL using basic authentication
-- **Code Modernization**: Use [GitHub Copilot Application Modernization for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-upgrade) to modernize authentication for Azure
-- **Cloud Migration**: Migrate from local Postgres to [Azure PostgreSQL Flexible Server](https://learn.microsoft.com/azure/postgresql/flexible-server/) with [Entra ID authentication](https://learn.microsoft.com/en-us/azure/active-directory/)
-- **Containerization**: Use [Containerization Assist](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.aks-devx-tools) to generate Docker and Kubernetes manifests for deployment
+- **Simulate On-Prem Execution**: Run [Spring Boot PetClinic](https://github.com/spring-projects/spring-petclinic) locally with PostgreSQL using basic authentication representative of on-prem legacy Java workloads
+- **Code Modernization**: Use [GitHub Copilot Application Modernization for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-upgrade) to modernize elements of the workload
+- **Cloud Migration**: Migrate from self-hosted Postgres to [Azure PostgreSQL Flexible Server](https://learn.microsoft.com/azure/postgresql/flexible-server/) with [Entra ID authentication](https://learn.microsoft.com/en-us/azure/active-directory/)
+- **Containerization**: Use <container tool> to generate Docker and Kubernetes manifests for deployment
 - **AKS Deployment**: Deploy to [AKS Automatic](https://learn.microsoft.com/azure/aks/automatic/) with [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview) and [service connector](https://learn.microsoft.com/azure/service-connector/)
 
 ## 📁 Workshop Structure
@@ -20,23 +20,23 @@ mm-springboot-petclinic-to-aks-automatic/
 │   ├── quickstart.sh                  # One-command workshop setup
 │   └── setup-azure-infrastructure.sh  # Azure resource creation
 ├── src/                                # Spring Boot PetClinic application (created during setup)
-├── manifests/                          # Generated Kubernetes manifests (placeholder)
-├── config/                             # Configuration files (placeholder)
-└── .env                               # Environment variables (created during setup)
+├── manifests/                          # Generated Kubernetes manifests (empty initially)
+├── config/                             # Configuration files (empty initially)
+└── images/                             # Workshop screenshots and diagrams
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites Check
 Ensure you have the following tools installed and available:
-- Azure CLI (logged in with `az login`)
-- Java 17 or 21
+- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) (logged in with `az login`)
+- [Java 17 or 21](https://learn.microsoft.com/en-us/java/openjdk/download) (Microsoft OpenJDK)
 - Maven 3.8+
-- Docker Desktop
-- VS Code with Java Extension Pack
-- GitHub Copilot App Modernization extension
-- kubectl
-- Bash/Zsh shell (macOS or WSL2)
+- Docker Desktop or equivalent
+- [VS Code with Java Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
+- [GitHub Copilot App Modernization Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-upgrade)
+- [kubectl](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#install-the-azure-cli-and-kubernetes-cli) (available via Azure AKS client tools)
+- Bash/Zsh shell (Linux or macOS or Windows w/WSL2v2)
 
 ### Module 1: Setup Petclinic locally and test
 
@@ -71,7 +71,7 @@ Once the application is running in your browser, take some time to explore the f
 - **Edit Pet Information**: From an owner's page, click "Edit Pet" to see how pet details are managed
 - **Review Veterinarians**: Navigate to "VETERINARIANS" to see the 6 vets with their specialties (radiology, surgery, dentistry)
 
-3. Next, let's open the Petclinic project in VS Code and begin our modernization work:
+3. Next, let's open the Petclinic project in VS Code and begin our modernization work. Open a terminal and change to the mm-springboot-petclinic-to-aks-automatic directory. Run the following command to launch VS Code into the root of the lab contents:
    ```bash
    code src/
    ```
@@ -79,8 +79,8 @@ Once the application is running in your browser, take some time to explore the f
 ---
 
 ### Module 2: Application Modernization
-**What You'll Do:** Use GitHub Copilot Application Modernization for Java to assess, remediate, and modernize the Spring Boot application
-**What You'll Learn:** How AI-powered modernization tools work, best practices for upgrading legacy applications, and the modernization workflow
+**What You'll Do:** Use GitHub Copilot Application Modernization for Java to assess, remediate, and modernize the Spring Boot application in preparation to migrate the workload to AKS Automatic
+**What You'll Learn:** How GitHub Copilot Application Modernization for Java work, demonstration of modernizing elements of legacy applications, and the modernization workflow
 
 **Detailed Steps:**
 
@@ -105,20 +105,35 @@ The tool will execute "appmod-precheck-assessment" and show successful completio
 <img src="images/module2-step4-github-folder-created.png" width="40%" alt="Module2-Step4-GithubFolderCreated">
 
 ### Step 5: Review Generated Artifacts
-A .github folder is created to store modernization artifacts and logs
+A .github folder is created to store modernization artifacts and logs. When using App Mod for Java, the `.github/appmod-java` directory typically houses assessment outputs like logs and configuration under `appcat`, with code migration artifacts found in the `code-migration` folder.
 
 <img src="images/module2-step3-tool-execution.png" width="40%" alt="Module2-Step3-ToolExecution">
    
 ### Step 6: Review AppCAT Configuration Options
-Scroll down in the GitHub Copilot chat to see the AppCAT tool configuration. [AppCAT for Java](https://learn.microsoft.com/en-us/azure/migrate/appcat/java?view=migrate-classic) is Azure Migrate's application and code assessment tool that App Mod for Java uses to perform static code analysis against your Java workload. It uses advanced analysis techniques to understand your application's structure and dependencies, identifying replatforming and migration opportunities for Azure.
+Scroll down in the GitHub Copilot chat to see the AppCAT tool configuration represented as JSON. 
 
-The tool offers various targets including `azure-aks` for AKS deployment, `openjdk17` for Java 17 upgrade, and `cloud-readiness` for Azure optimization. Analysis modes include `source-only` for code analysis or `full` for code and dependency analysis.
+**What is AppCAT?**
+[AppCAT for Java](https://learn.microsoft.com/en-us/azure/migrate/appcat/java?view=migrate-classic) is Azure Migrate's application and code assessment tool that analyzes your Java application to identify modernization opportunities for Azure. It examines your code structure, dependencies, and configurations to recommend specific improvements for cloud deployment.
+
+**Configuration Options:**
+The tool offers several analysis targets and modes:
+
+**Analysis Targets:**
+- `azure-aks` - Selects AppCAT rules relavent to moving pre-containerized workloads to AKS
+- `openjdk17` - Identifies Java 17 upgrade opportunities and compatibility issues
+- `cloud-readiness` - General pre-container workload optimization recommendations
+
+**Analysis Modes:**
+- `source-only` - Analyzes source code without dependency scanning (faster execution)
+- `full` - Comprehensive analysis including both code and dependency scanning
 
 **What AppCAT Does:**
 - **Discovers technology usage** in your legacy applications
 - **Assesses code for specific Azure targets** (AKS, App Service, Container Apps)
 - **Identifies modifications needed** to replatform to Azure
 - **Provides Azure-specific replatforming rules** and best practices
+
+The results of the AppCAT scan are passed into Github Copilot Application Modernization for Java which uses the context of the findings to suggest opportunities for modernization in preparation for containerizing and migrating the workload to Azure.
 
 <img src="images/module2-step5-appcat-configuration.png" width="40%" alt="Module2-Step5-AppCATConfiguration">
 
@@ -147,82 +162,86 @@ In the GitHub Copilot chat, you'll see the "Run `appmod-run-assessment`" tool wi
    }
    ```
 
-   **What this means:**
-   - **`azure-aks`**: Targets AKS-specific modernization rules and best practices
-   - **`cloud-readiness`**: Focuses on general Azure cloud optimization
-   - **`mode: "source-only"**: Analyzes source code without dependency scanning (faster)
-
-   **Action:** Either modify the JSON in the Input section or copy-paste the AKS-focused configuration above.
+   Copy page the AKS-focused configuration above over top the existing JSON in the Github Copilot Agent chat.
     
    <img src="images/module2-step6-configure-assessment-parameters.png" width="40%" alt="Module2-Step6-ConfigureAssessmentParameters">
 
 ### Step 7: Execute Assessment
 Click the "Run" button to start the AppCAT assessment. The tool will analyze your Spring Boot PetClinic application using the configured parameters.
 
-> **Note:** The assessment process may take a few minutes to complete as it thoroughly analyzes your codebase against 935+ rules. This is normal - grab a coffee while it runs! ☕
+> **Note:** The assessment process may take a few minutes to complete as it thoroughly analyzes your codebase against 935+ rules. This is normal - enjoy your coffee while it runs! ☕
 
 ### Step 8: Review Assessment Results
 After the assessment completes, you'll see a success message in the GitHub Copilot chat summarizing what was accomplished:
 
 <img src="images/module2-step7-assessment-report-details.png" width="40%" alt="Module2-Step7-AssessmentReportDetails">
 
-**What the assessment accomplished:**
-- **Prerequisites Verified**: AppCAT CLI environment setup and validation
-- **Configuration Applied**: Assessment performed with `azure-aks` and `cloud-readiness` targets
-- **Analysis Executed**: Processed 838 rules out of 935 total rules
-- **Report Generated**: Assessment report opened in webview interface
-
 ### Step 9: Review Detailed Assessment Report
 The assessment report opens in VS Code showing detailed findings:
 
 <img src="images/module2-step7-assessment-report-chat-summary.png" width="40%" alt="Module2-Step7-AssessmentReportChatSummary">
 
-**Key sections to review:**
-- **Issue Summary**: 8 cloud readiness issues, 1 Java upgrade issue
-- **Solution Coverage**: 54% of issues can be resolved via Microsoft solutions
-- **Cloud Readiness Issues**: Database migration recommendations for Azure PostgreSQL
-- **Criticality Levels**: Mandatory (purple), Potential (blue), Optional (gray)
+**Assessment Report Overview:**
+The assessment report details the analysis of the Spring Boot Petclinic application's cloud readiness, in this case identifying 8 cloud readiness issues and 1 Java upgrade opportunity. The report indicates that over 50% of the identified issues can be resolved in Java code and configuration updates using migration capabilities built into Github Copilot Application Modernization for Java. Each finding is categorized by criticality level: Mandatory issues (purple) require attention first, while Potential issues (blue) represent optimization opportunities, and Optional issues (gray) are nice to have improvements that may be addressed later.
 
-**Next steps from the report:**
-- Review identified issues and their severity levels
-- Use Microsoft solutions for 54% of issues
-- Leverage GitHub Copilot for remaining issues
-- Plan your migration based on findings
+Based on these findings, we will focus on using GitHub Copilot Application Modernization for Java to address some of the identified issues, starting with the database migration to Azure PostgreSQL with managed identity authentication followed by migrating from in-memory Spring caching to using Azure Cache for Redis.
 
 ### Step 10: Review Specific Findings
-Click on individual issues in the report to see detailed recommendations. For this lab, we'll focus on the key findings:
+Click on individual issues in the report to see detailed recommendations. The assessment has identified several modernization opportunities in your Spring Boot application. Understanding these findings helps you prioritize which improvements will have the most impact on your application's cloud readiness.
 
-   **Primary Focus - Database Migration (PostgreSQL):**
-   - **Issue**: PostgreSQL database found in configuration files
-   - **Files affected**: `pom.xml`, `build.gradle`, `application.properties`, `application-postgres.properties`
-   - **Recommendation**: Migrate to Azure Database for PostgreSQL Flexible Server
-   - **Action**: Use Azure Database Migration Service (DMS) for online migration with minimal downtime
+**Key Findings Summary:**
+The assessment discovered three main areas where your application can be modernized for better Azure integration and security.
 
-   **Security Finding - Local Credentials:**
-   - **Issue**: Passwords found in plaintext configuration files
-   - **Files affected**: `application-mysql.properties`, `application-postgres.properties`, `application.properties`
-   - **Recommendation**: Migrate from plaintext credentials to Azure Key Vault
-   - **Action**: Implement passwordless connections using Entra ID authentication
+**Primary Focus - Database Migration (PostgreSQL):**
+- **What was found**: PostgreSQL database configuration detected in your application files
+- **Why this matters**: Self-hosted databases require more maintenance and don't scale as easily as managed cloud services
+- **Files affected**: `pom.xml`, `build.gradle`, `application.properties`, `application-postgres.properties`
+- **Recommended solution**: Migrate to Azure Database for PostgreSQL Flexible Server
+- **Benefits**: Managed service with automatic backups, scaling, and high availability
 
-   **Caching Finding - Embedded Cache Management:**
-   - **Issue**: Spring Boot Cache library embedded in application
-   - **File affected**: `pom.xml` (Line 50)
-   - **Recommendation**: Migrate to Azure Cache for Redis
-   - **Action**: Replace embedded cache with backing service
+**Security Finding - Local Credentials:**
+- **What was found**: Database passwords stored in plaintext configuration files
+- **Why this matters**: Plaintext passwords are a security risk and don't follow cloud security best practices
+- **Files affected**: `application-mysql.properties`, `application-postgres.properties`, `application.properties`
+- **Recommended solution**: Implement passwordless connections using Entra ID authentication
+- **Benefits**: Enhanced security with managed identity authentication
 
-   **Note**: While the report identifies multiple issues, this lab will focus on the PostgreSQL migration to Azure Database for PostgreSQL Flexible Server with Entra AD authentication, and the embedded cache migration to Azure Cache for Redis. Additional security findings will be addressed in future lab modules.
+**Caching Finding - Embedded Cache Management:**
+- **What was found**: Spring Boot Cache library embedded within the application
+- **Why this matters**: Embedded caching doesn't scale across multiple application instances
+- **File affected**: `pom.xml` (Line 50)
+- **Recommended solution**: Migrate to Azure Cache for Redis
+- **Benefits**: Distributed caching that scales with your application
+
+**Lab Focus:**
+This workshop will focus on the PostgreSQL migration to Azure Database for PostgreSQL Flexible Server with Entra ID authentication. Additional findings will be addressed in future lab modules.
 
 ### Step 11: Take Action on Findings
-The assessment report offers two types of migration actions based on AppCAT findings:
+The assessment report provides two different approaches for addressing the identified modernization opportunities, depending on the level of automation available for each finding.
 
-- **Guided migration (blue "Migrate" button)**: For findings that GitHub Copilot Application Modernization for Java can currently automate, click the blue "Migrate" button to trigger a curated remediation flow with step-by-step guidance.
-- **Unguided migration ("Ask Copilot" button)**: For findings that are not yet automated by the GitHub Copilot Application Modernization for Java tooling, use the "Ask Copilot" button to work directly with GitHub Copilot in agent mode using ready-to-use prompts that reference the specific finding, affected files, and target Azure service.
+**Migration Action Types:**
+
+**Guided Migration (Blue "Migrate" Button):**
+- **When to use**: For findings that GitHub Copilot Application Modernization for Java can fully automate
+- **What happens**: Clicking the blue "Migrate" button triggers a curated, step-by-step remediation flow
+- **Benefits**: Fully automated process with built-in validation and error handling
+- **Best for**: Common migration patterns that the tool has been trained to handle
+
+**Unguided Migration ("Ask Copilot" Button):**
+- **When to use**: For findings that require more complex or custom migration approaches
+- **What happens**: Opens GitHub Copilot in agent mode with ready-to-use prompts specific to the finding
+- **Benefits**: Provides AI assistance with context-aware guidance and code suggestions
+- **Best for**: Unique scenarios or when you need more control over the migration process
 
 <img src="images/module2-step11-guided-migration-vs-copilot-prompts.png" width="100%" alt="Module2-Step11-GuidedMigrationVsCopilotPrompts">
 
-**For this lab, we will focus on modernizing the PetClinic workload by:**
-- **Database Migration**: Migrating the self-hosted PostgreSQL database that uses basic authentication to Azure PostgreSQL Flexible Server using Entra ID authentication and AKS Workload Identity
-- **Caching Migration**: Migrating from in-memory caching in Spring to Azure Cache for Redis, also using Entra ID authentication and AKS Workload Identity
+**Lab Migration Strategy:**
+For this workshop, we'll focus on two key modernization areas that demonstrate different migration approaches:
+
+- **Database Migration**: Migrate from self-hosted PostgreSQL with basic authentication to Azure PostgreSQL Flexible Server using Entra ID authentication and AKS Workload Identity
+- **Caching Migration**: Migrate from in-memory Spring caching to Azure Cache for Redis, also using Entra ID authentication and AKS Workload Identity
+
+This approach showcases both automated and assisted migration techniques while modernizing your application for cloud-native deployment.
 
 ### Step 12: Select PostgreSQL Migration Task
 Begin the modernization by selecting the desired migration task. For our Spring Boot application, we will migrate to Azure PostgreSQL Flexible Server using the Spring option. The other options shown are for generic JDBC usage.
@@ -243,108 +262,121 @@ When the migration task for PostgreSQL with Entra ID authentication begins to ru
 <img src="images/module2-step13-migration-task-initialized.png" width="40%" alt="Module2-Step13-MigrationTaskInitialized">
 
 ### Step 14: Review Migration Plan and Begin Code Migration
-After the migration task initializes, a comprehensive migration plan summary will be provided, outlining the key changes the tool will make to your application. This plan focuses on integrating Azure Managed Identity with PostgreSQL.
+The App Modernization tool has analyzed your Spring Boot application and generated a comprehensive migration plan. This plan outlines the specific changes needed to implement Azure Managed Identity authentication for PostgreSQL connectivity.
 
-**Migration Plan Summary:**
-The plan will detail the following key changes:
-- **Add Spring Cloud Azure Dependencies**: Adding Spring Cloud Azure BOM version 5.22.0 (compatible with Spring Boot 3.x) and the `spring-cloud-azure-starter-jdbc-postgresql` dependency to both `pom.xml` and `build.gradle`
-- **Configure Managed Identity Authentication**: Updating `application.properties` and `application-postgres.properties` to replace username/password authentication with managed identity, add Azure managed identity configuration properties, and enable passwordless authentication
+**Migration Plan Overview:**
+The tool will implement the following key changes:
+- **Add Spring Cloud Azure Dependencies**: Integrate Spring Cloud Azure BOM version 5.22.0 and the `spring-cloud-azure-starter-jdbc-postgresql` dependency to both Maven and Gradle build files
+- **Configure Managed Identity Authentication**: Update application configuration files to replace username/password authentication with Azure Managed Identity, enabling passwordless database connectivity
 
 **Files to be Modified:**
-- `pom.xml` - Add Spring Cloud Azure dependencies
-- `build.gradle` - Add Spring Cloud Azure dependencies  
-- `application.properties` - Configure managed identity
-- `application-postgres.properties` - Configure managed identity
+- `pom.xml` and `build.gradle` - Add Spring Cloud Azure dependencies
+- `application.properties` and `application-postgres.properties` - Configure managed identity authentication settings
 
-**Tracking Files Created:**
-The tool will create `plan.md` and `progress.md` files in the `.github/appmod-java/code-migration/managed-identity-spring/mi-postgresql-spring-[timestamp]` directory to track what changes are made and why, providing full visibility into the migration process.
-
-**Configuration Settings:**
-- VS Code uncommitted changes policy: `Always Stash` (will auto-stash any uncommitted changes)
-- New branch will be created for the migration work
-- Migration session ID will be provided for tracking
-
-**To Begin the Migration:**
-When you're ready to proceed with the PostgreSQL code migration work, type **"Yes"** in the GitHub Agent Chat to begin the automated code changes.
-
-### Step 15: Review Migration Process and Progress Tracking
-Once you confirm with "Yes", the migration tool will begin implementing the changes in a structured, two-phase approach. The tool creates a dedicated Git branch for all migration changes to facilitate easy rollback if needed.
+**Migration Tracking:**
+The tool will create tracking files (`plan.md` and `progress.md`) in the `.github/appmod-java/code-migration/managed-identity-spring/mi-postgresql-spring-[timestamp]` directory to document all changes and provide full visibility into the migration process.
 
 **Version Control Setup:**
-The tool automatically handles version control by:
-- Stashing any uncommitted changes (like `application.properties` modifications)
-- Creating a new branch: `appmod/java-managed-identity-spring/mi-postgresql-spring-[timestamp]`
-- Ensuring a clean working directory before making changes
+- A new Git branch will be created for the migration work
+- Uncommitted changes will be automatically stashed
+- Migration session ID will be provided for tracking
+
+**To Begin Migration:**
+Type **"Yes"** in the GitHub Agent Chat to initiate the automated code migration process.
+
+### Step 15: Review Migration Process and Progress Tracking
+Once you confirm with "Yes", the migration tool begins implementing changes using a structured, two-phase approach designed to ensure reliability and provide clear rollback capabilities if needed.
+
+**Migration Overview:**
+The tool implements a systematic approach that separates dependency updates from configuration changes, allowing for independent validation of each phase and better error handling.
+
+**Version Control Setup:**
+The tool automatically manages version control to ensure your work is protected:
+- **Stash uncommitted changes**: Any local modifications (like `application.properties` changes) are safely stashed
+- **Create dedicated branch**: New branch `appmod/java-managed-identity-spring/mi-postgresql-spring-[timestamp]` is created for all migration work
+- **Clean working directory**: Ensures a consistent starting point for the migration
 
 **Two-Phase Migration Process:**
-This particular migration task has chosen to break up the work into two distinct phases to ensure a systematic and reliable modernization approach. By separating dependency updates from configuration changes, the tool can validate each phase independently and provide better error handling and rollback capabilities.
 
 **Phase 1: Update Dependencies**
-- Updates `pom.xml` with Spring Cloud Azure BOM and PostgreSQL starter dependency
-- Updates `build.gradle` with corresponding Gradle dependencies
-- Adds Spring Cloud Azure version properties
+- **Purpose**: Add the necessary Azure libraries to your project
+- **Changes made**:
+  - Updates `pom.xml` with Spring Cloud Azure BOM and PostgreSQL starter dependency
+  - Updates `build.gradle` with corresponding Gradle dependencies
+  - Adds Spring Cloud Azure version properties
+- **Validation**: Ensures all new dependencies are properly integrated
 
 **Phase 2: Configure Application Properties**
-- Updates `application.properties` to configure PostgreSQL with managed identity (9 lines added, 2 removed)
-- Updates `application-postgres.properties` with Entra ID authentication settings (5 lines added, 4 removed)
-- Replaces username/password authentication with managed identity configuration
+- **Purpose**: Update configuration files to use managed identity authentication
+- **Changes made**:
+  - Updates `application.properties` to configure PostgreSQL with managed identity (9 lines added, 2 removed)
+  - Updates `application-postgres.properties` with Entra ID authentication settings (5 lines added, 4 removed)
+  - Replaces username/password authentication with managed identity configuration
+- **Validation**: Ensures configuration changes work with the updated dependencies
 
 **Progress Tracking:**
-The `progress.md` file is continuously updated throughout the migration process, providing a detailed log of:
-- What changes are being made and why
-- Which files are being modified
-- The rationale behind each modification
-- Real-time status of the migration work
-
-This approach ensures full transparency and traceability of all automated changes made to modernize your Spring Boot application for Azure PostgreSQL with Entra ID authentication.
+The `progress.md` file provides real-time visibility into the migration process:
+- **Change documentation**: Detailed log of what changes are being made and why
+- **File modifications**: Clear tracking of which files are being updated
+- **Rationale**: Explanation of the reasoning behind each modification
+- **Status updates**: Real-time progress of the migration work
 
 **Validation & Fix Iteration Loop:**
-After the migration changes are implemented, the tool automatically enters a validation and fix iteration loop to ensure the application builds successfully. This process includes:
+After implementing the migration changes, the tool automatically validates the results through a comprehensive testing process:
 
-- **CVE Validation**: The tool identifies newly added dependencies and checks for known Common Vulnerabilities and Exposures (CVEs)
+- **CVE Validation**: Scans newly added dependencies for known security vulnerabilities
 - **Build Validation**: Attempts to build the project and captures any compilation or dependency errors
 - **Automated Fixes**: Uses error output to automatically attempt fixes for common issues
 - **Iterative Process**: Continues through multiple validation cycles (up to 10 iterations) until the build succeeds
+
+This systematic approach ensures your Spring Boot application is successfully modernized for Azure PostgreSQL with Entra ID authentication while maintaining full functionality.
 
 <img src="images/image.png" width="40%" alt="Module2-Step15-ValidationFixLoop">
 
 **User Control:**
 At any point during this validation process, you can interrupt the automated fixes and manually resolve issues if you prefer to handle specific problems yourself. The tool provides clear feedback on what it's attempting to fix and allows you to take control when needed.
 
-### Step 16: Review Validation & Fix Loop Results
-The validation process progresses through multiple stages, each designed to ensure the migration changes are secure, functional, and consistent. Here's what happens during the validation loop:
+### Step 16: Validation and Fix Iteration Loop
+The App Modernization tool implements a comprehensive validation process to ensure the migration changes are secure, functional, and consistent. This automated validation runs through multiple stages to verify the integrity of the migration.
 
-**Stage 1: CVE Validation** ✅
-- **Result**: No CVEs detected in the new Spring Cloud Azure dependencies
-- **Action**: No changes made - security scan passed
+<img src="images/module2-step16-cve-validation-iteration-loop.png" width="50%" alt="CVE Validation Iteration Loop">
 
-**Stage 2: Build Validation** ✅
-- **Result**: Build successful after migration changes
-- **Action**: No changes made - project compiles successfully
+*Figure: Execute Validation & Fix Iteration Loop - CVE validation process for newly added Azure Spring dependencies*
 
-**Stage 3: Consistency Validation** ✅
-- **Result**: No consistency issues detected
-- **Details**: All changes properly implement Azure Managed Identity for PostgreSQL as specified in the knowledge base
-- **Files Validated**: 
-  - `pom.xml` - Correctly updated with Azure dependencies
-  - `application-postgres.properties` - Properly configured for passwordless authentication
-  - `application.properties` - Successfully migrated from H2 to PostgreSQL with managed identity
+**Validation Stages:**
+1. **CVE Validation** ✅ - Scans newly added dependencies for known security vulnerabilities
+2. **Build Validation** ✅ - Verifies the application compiles and builds successfully after migration changes
+3. **Consistency Validation** ✅ - Ensures all configuration files are properly updated and consistent
+4. **Test Validation** ⚠️ - Executes application tests to verify functionality remains intact
 
-**Stage 4: Test Validation** ⚠️
-- **Issue Detected**: Tests failed with compile errors
-- **Error Details**: Maven Surefire plugin failure during test execution
-- **Automatic Response**: The tool automatically detects these errors from the build output and initiates debugging
+**Automated Error Detection and Resolution:**
+The tool includes intelligent error detection capabilities that automatically identify and resolve common issues:
+- Parses build output to detect compilation errors
+- Identifies root causes of test failures
+- Applies automated fixes for common migration issues
+- Continues through validation iterations until all issues are resolved
 
-**Automatic Error Detection & Debugging:**
-The App Modernization tool doesn't stop when errors occur. Instead, it:
-- Automatically parses error messages from build outputs
-- Identifies the root cause of compilation or test failures
-- Attempts to fix common issues automatically
-- Continues through additional validation iterations until all issues are resolved
+This automated validation ensures your application maintains full functionality while implementing the security improvements from the migration.
 
-This intelligent error detection and debugging capability ensures that your application is fully functional after the migration, with all tests passing and no security vulnerabilities introduced.
+### Step 17: Review Migration Completion Summary
+Upon successful completion of the validation process, the App Modernization tool presents a comprehensive migration summary report confirming the successful implementation of Azure Managed Identity authentication for PostgreSQL in your Spring Boot application.
 
+<img src="images/module2-step17-migration-success-summary.png" width="50%" alt="Migration Success Summary">
 
+**Migration Accomplishments:**
+The migration successfully transformed your application from password-based authentication to Azure Managed Identity for PostgreSQL, significantly enhancing security while maintaining full application functionality. The process integrated Spring Cloud Azure dependencies, updated configuration properties for managed identity authentication, and ensured all validation stages passed including CVE scanning, build validation, consistency checks, and test execution.
+
+**Configuration-Driven Approach:**
+A key advantage of this migration is that no Java code changes were required. Spring Boot's configuration-driven architecture automatically handles database connection details based on the configuration files. When switching from password authentication to managed identity, Spring reads the updated configuration and automatically uses the appropriate authentication method. Your existing Java code for database operations (such as saving pet records or retrieving owner information) continues to function identically, but now connects to the database using the more secure managed identity approach.
+
+**Files Modified:**
+The migration process updated the following configuration files:
+- `pom.xml` and `build.gradle` - Added Spring Cloud Azure dependencies
+- `application.properties` and `application-postgres.properties` - Configured managed identity authentication
+- Test configurations - Updated to work with the new authentication method
+
+**Version Control Integration:**
+All changes were automatically committed to a new branch (`appmod/java-managed-identity-spring/mi-postgresql-spring-[timestamp]`) with comprehensive documentation including migration plan (`plan.md`), progress tracking (`progress.md`), and final summary (`summary.md`) files for complete visibility into the migration process and outcomes.
 
 ---
 
@@ -400,13 +432,13 @@ This intelligent error detection and debugging capability ensures that your appl
 ---
 
 ### Module 4: Generate Containerization Assets
-**What You'll Do:** Use Containerization Assist to create Docker and Kubernetes manifests
+**What You'll Do:** Use <container tool> to create Docker and Kubernetes manifests
 **What You'll Learn:** How AI-powered tools can generate production-ready containerization assets
 
 **Detailed Steps:**
-1. Configure Containerization Assist for the application:
+1. Configure <container tool> for the application:
    - In VS Code, open Command Palette
-   - Select "Containerization Assist: Generate Dockerfile and Kubernetes Manifests"
+   - Select "<container tool>: Generate Dockerfile and Kubernetes Manifests"
 
 2. Generate optimized Dockerfile:
    - Follow the guided process
@@ -524,40 +556,6 @@ This intelligent error detection and debugging capability ensures that your appl
 - ✅ Service accessible via kubectl port-forward
 - ✅ Application connecting to Azure PostgreSQL
 
-## 🚨 Troubleshooting
-
-### Common Issues & Solutions
-
-#### PostgreSQL Connection Issues
-```bash
-# Check firewall rules
-az postgres flexible-server firewall-rule list --resource-group petclinic-workshop-rg --name $POSTGRES_SERVER
-
-# Check connection from AKS
-kubectl exec -it <pod-name> -- nc -zv $POSTGRES_SERVER 5432
-```
-
-#### AKS Deployment Issues
-```bash
-# Check pod logs
-kubectl logs <pod-name>
-
-# Check pod status
-kubectl describe pod <pod-name>
-
-# Check service connector status
-az webapp connection list --resource-group petclinic-workshop-rg
-```
-
-#### Workload Identity Issues
-```bash
-# Check federated identity credentials
-az identity federated-credential list --identity-name petclinic-workshop-identity --resource-group petclinic-workshop-rg
-
-# Verify OIDC issuer
-az aks show --resource-group petclinic-workshop-rg --name petclinic-workshop-aks --query "oidcIssuerProfile.issuerUrl"
-```
-
 ## 📋 Workshop Progress Checklist
 
 ### ✅ Pre-Workshop Setup
@@ -594,7 +592,7 @@ az aks show --resource-group petclinic-workshop-rg --name petclinic-workshop-aks
 - [ ] Update application properties for Azure
 
 ### 🐳 Step 4: Containerization Assets
-- [ ] Use Containerization Assist to generate Dockerfile
+- [ ] Use <container tool> to generate Dockerfile
 - [ ] Generate Kubernetes manifests
 - [ ] Review generated files
 - [ ] Validate containerization assets
@@ -625,7 +623,7 @@ az aks show --resource-group petclinic-workshop-rg --name petclinic-workshop-aks
 - **Azure PostgreSQL Flexible Server**: Cloud database with Entra ID auth
 - **AKS Automatic**: Managed Kubernetes with automated deployments
 - **[GitHub Copilot Application Modernization for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-upgrade)**: AI-powered Java application modernization
-- **[Containerization Assist](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.aks-devx-tools)**: AI-powered Docker and K8s manifest generation
+- **<container tool>**: AI-powered Docker and K8s manifest generation
 - **Workload Identity**: Passwordless authentication between AKS and Azure services
 - **Service Connector**: Secure connection between AKS and PostgreSQL
 
@@ -645,7 +643,7 @@ docker stop petclinic-postgres && docker rm petclinic-postgres
 
 - [Spring Boot PetClinic](https://github.com/spring-projects/spring-petclinic)
 - [GitHub Copilot Application Modernization for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-upgrade)
-- [Containerization Assist](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.aks-devx-tools)
+- <container tool>
 - [AKS Automatic Documentation](https://learn.microsoft.com/en-us/azure/aks/automatic/)
 - [Azure PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/)
 - [Azure Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
@@ -653,7 +651,7 @@ docker stop petclinic-postgres && docker rm petclinic-postgres
 ## 🆘 Support
 
 If you encounter issues during the workshop:
-1. Check the troubleshooting section above
+1. Review the workshop steps and verify prerequisites
 2. Verify all prerequisites are installed and working
 3. Check Azure portal for resource health and diagnostics
 4. Use `kubectl logs` to debug application issues
@@ -664,7 +662,7 @@ If you encounter issues during the workshop:
 - All Azure resources use fixed naming conventions
 - PostgreSQL server names include a random 6-character suffix
 - The workshop focuses on the migration experience, not troubleshooting
-- Containerization Assist will generate the actual Docker and K8s files
+- <container tool> will generate the actual Docker and K8s files
 
 ## 📝 Workshop Notes & Observations
 - **What worked well:**
