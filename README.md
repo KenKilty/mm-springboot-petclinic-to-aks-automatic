@@ -138,7 +138,7 @@ The results of the AppCAT scan are passed into Github Copilot Application Modern
 <img src="images/module2-step5-appcat-configuration.png" width="40%" alt="Module2-Step5-AppCATConfiguration">
 
 #### Configure Assessment Parameters
-In the GitHub Copilot chat, you'll see the "Run `appmod-run-assessment`" tool with configuration options. This is where you can customize the assessment targets and analysis mode. 
+In the GitHub Copilot chat, you'll see the "Run `appmod-run-assessment`" tool with configuration options. This is where you may customize the assessment targets and analysis mode. 
 
    **Default Configuration:**
    ```json
@@ -150,98 +150,50 @@ In the GitHub Copilot chat, you'll see the "Run `appmod-run-assessment`" tool wi
      }
    }
    ```
-
-   **For AKS-focused migration, update to:**
-   ```json
-   {
-     "workspacePath": "<path to project>/src",
-     "appCatConfig": {
-       "target": ["azure-aks", "cloud-readiness"],
-       "mode": "source-only"
-     }
-   }
-   ```
-
-   Copy page the AKS-focused configuration above over top the existing JSON in the Github Copilot Agent chat.
     
    <img src="images/module2-step6-configure-assessment-parameters.png" width="40%" alt="Module2-Step6-ConfigureAssessmentParameters">
 
 ### Step 7: Execute Assessment
-Click the "Run" button to start the AppCAT assessment. The tool will analyze your Spring Boot PetClinic application using the configured parameters.
-
-> **Note:** The assessment process may take a few minutes to complete as it thoroughly analyzes your codebase against 935+ rules. This is normal - enjoy your coffee while it runs! ☕
+Click the "Run" button to start the assessment. The tool will analyze your Spring Boot PetClinic application using the configured analysis parameters.
 
 ### Step 8: Review Assessment Results
 After the assessment completes, you'll see a success message in the GitHub Copilot chat summarizing what was accomplished:
 
-<img src="images/module2-step7-assessment-report-details.png" width="40%" alt="Module2-Step7-AssessmentReportDetails">
+<img src="images/module2-step8-assessment-report-details.png" width="40%" alt="Module2-Step8-AssessmentReportDetails">
 
 ### Step 9: Review Detailed Assessment Report
 The assessment report opens in VS Code showing detailed findings:
 
-<img src="images/module2-step7-assessment-report-chat-summary.png" width="40%" alt="Module2-Step7-AssessmentReportChatSummary">
+<img src="images/module2-step9-assessment-report-chat-summary.png" width="40%" alt="Module2-Step9-AssessmentReportChatSummary">
 
 **Assessment Report Overview:**
 The assessment report details the analysis of the Spring Boot Petclinic application's cloud readiness, in this case identifying 8 cloud readiness issues and 1 Java upgrade opportunity. The report indicates that over 50% of the identified issues can be resolved in Java code and configuration updates using migration capabilities built into Github Copilot Application Modernization for Java. Each finding is categorized by criticality level: Mandatory issues (purple) require attention first, while Potential issues (blue) represent optimization opportunities, and Optional issues (gray) are nice to have improvements that may be addressed later.
 
-Based on these findings, we will focus on using GitHub Copilot Application Modernization for Java to address some of the identified issues, starting with the database migration to Azure PostgreSQL with managed identity authentication followed by migrating from in-memory Spring caching to using Azure Cache for Redis.
-
 ### Step 10: Review Specific Findings
-Click on individual issues in the report to see detailed recommendations. The assessment has identified several modernization opportunities in your Spring Boot application. Understanding these findings helps you prioritize which improvements will have the most impact on your application's cloud readiness.
+Click on individual issues in the report to see detailed recommendations. In practice, you would review all recommendations and determine the set that aligns with your migration and modernization goals for the application.
 
-**Key Findings Summary:**
-The assessment discovered three main areas where your application can be modernized for better Azure integration and security.
+For this lab, we will spend our time focusing on two modernization recommendations: updating the code to use modern authentication via Azure Database for PostgreSQL Flexible Server with Entra ID authentication and updating the code to remove embedded cache management and move to using Azure Cache for Redis.
 
-**Primary Focus - Database Migration (PostgreSQL):**
-- **What was found**: PostgreSQL database configuration detected in your application files
-- **Why this matters**: Self-hosted databases require more maintenance and don't scale as easily as managed cloud services
+**Modernization Lab Focus #1** - Database Migration to Azure PostgreSQL Flexible Server
+- **What was found**: PostgreSQL database configuration using basic authentication detected in  application files
+- **Why this matters**: External dependencies like on-premises databases with legacy authentication must be resolved before migrating to Azure
 - **Files affected**: `pom.xml`, `build.gradle`, `application.properties`, `application-postgres.properties`
 - **Recommended solution**: Migrate to Azure Database for PostgreSQL Flexible Server
 - **Benefits**: Managed service with automatic backups, scaling, and high availability
 
-**Security Finding - Local Credentials:**
-- **What was found**: Database passwords stored in plaintext configuration files
-- **Why this matters**: Plaintext passwords are a security risk and don't follow cloud security best practices
-- **Files affected**: `application-mysql.properties`, `application-postgres.properties`, `application.properties`
-- **Recommended solution**: Implement passwordless connections using Entra ID authentication
-- **Benefits**: Enhanced security with managed identity authentication
-
-**Caching Finding - Embedded Cache Management:**
+**Modernization Lab Focus #2**  - Embedded Cache Management to Azure Cache for Redis
 - **What was found**: Spring Boot Cache library embedded within the application
-- **Why this matters**: Embedded caching doesn't scale across multiple application instances
+- **Why this matters**: Embedded caching doesn't work when deploying to Kubernetes with multiple replicas
 - **File affected**: `pom.xml` (Line 50)
 - **Recommended solution**: Migrate to Azure Cache for Redis
 - **Benefits**: Distributed caching that scales with your application
 
-**Lab Focus:**
-This workshop will focus on the PostgreSQL migration to Azure Database for PostgreSQL Flexible Server with Entra ID authentication. Additional findings will be addressed in future lab modules.
-
 ### Step 11: Take Action on Findings
-The assessment report provides two different approaches for addressing the identified modernization opportunities, depending on the level of automation available for each finding.
-
-**Migration Action Types:**
-
-**Guided Migration (Blue "Migrate" Button):**
-- **When to use**: For findings that GitHub Copilot Application Modernization for Java can fully automate
-- **What happens**: Clicking the blue "Migrate" button triggers a curated, step-by-step remediation flow
-- **Benefits**: Fully automated process with built-in validation and error handling
-- **Best for**: Common migration patterns that the tool has been trained to handle
-
-**Unguided Migration ("Ask Copilot" Button):**
-- **When to use**: For findings that require more complex or custom migration approaches
-- **What happens**: Opens GitHub Copilot in agent mode with ready-to-use prompts specific to the finding
-- **Benefits**: Provides AI assistance with context-aware guidance and code suggestions
-- **Best for**: Unique scenarios or when you need more control over the migration process
+Based on the assessment findings, GitHub Copilot Application Modernization for Java provides two types of migration actions to assist with modernization opportunities. The first is **guided migrations** (blue "Migrate" button), which offer fully guided, step-by-step remediation flows for common migration patterns that the tool has been trained to handle. The second is **unguided migrations** ("Ask Copilot" button), which provide AI assistance with context aware guidance and code suggestions for more complex or custom scenarios.
 
 <img src="images/module2-step11-guided-migration-vs-copilot-prompts.png" width="100%" alt="Module2-Step11-GuidedMigrationVsCopilotPrompts">
 
-**Lab Migration Strategy:**
-For this workshop, we'll focus on two key modernization areas that demonstrate different migration approaches:
-
-- **Database Migration**: Migrate from self-hosted PostgreSQL with basic authentication to Azure PostgreSQL Flexible Server using Entra ID authentication and AKS Workload Identity
-- **Caching Migration**: Migrate from in-memory Spring caching to Azure Cache for Redis, also using Entra ID authentication and AKS Workload Identity
-
-This approach showcases both automated and assisted migration techniques while modernizing your application for cloud-native deployment.
+For this workshop, we'll focus on two modernization areas that demonstrate how to externalize dependencies in the workload to Azure PaaS before deploying to AKS Automatic. First, we'll migrate from self-hosted PostgreSQL with basic authentication to Azure PostgreSQL Flexible Server using Entra ID authentication with AKS Workload Identity. Second, we'll migrate from in-memory Spring caching to Azure Cache for Redis, also using Entra ID authentication with AKS Workload Identity.
 
 ### Step 12: Select PostgreSQL Migration Task
 Begin the modernization by selecting the desired migration task. For our Spring Boot application, we will migrate to Azure PostgreSQL Flexible Server using the Spring option. The other options shown are for generic JDBC usage.
